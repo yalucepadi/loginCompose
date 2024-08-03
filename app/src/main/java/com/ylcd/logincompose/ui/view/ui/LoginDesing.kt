@@ -84,40 +84,46 @@ class LoginDesing {
                         // Forma de onda
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val path = Path()
-                            path.moveTo(0f, size.height * 0.2f)  // Ajuste del punto de inicio de la onda
-                            path.quadraticBezierTo(
-                                size.width * 0.5f, size.height * 0.15f,  // Ajuste del punto medio de la onda
-                                size.width, size.height * 0.2f  // Ajuste del punto final de la onda
+
+                            // Punto de inicio
+                            path.moveTo(0f, size.height * 0.35f)
+
+                            // Curva ondeada
+                            path.cubicTo(
+                                size.width * 0.25f, size.height * 0.25f,  // Primer punto de control
+                                size.width * 0.75f, size.height * 0.45f,  // Segundo punto de control
+                                size.width, size.height * 0.35f           // Punto final
                             )
+
+                            // Completar la forma
                             path.lineTo(size.width, size.height)
                             path.lineTo(0f, size.height)
                             path.close()
 
+                            // Dibujar la forma
                             drawPath(
                                 path = path,
                                 color = Color.White
                             )
                         }
-
-                        Column(
+                        // Logo colocado en la parte superior
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(24.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .fillMaxWidth()
+                                .padding(top = 80.dp),  // Ajusta este valor según sea necesario
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            Logo() // Logo dentro del degradado y la forma de onda
-                        }
-                    }
+                            Logo()
+                        }}
 
+                    // Contenido principal
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(24.dp),
-                        verticalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(240.dp)) // Añadir espacio para el logo
                         Text(
                             text = "Ingreso",
                             color = Color.Black,
