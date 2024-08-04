@@ -23,7 +23,7 @@ val white= Color(0xFFFAF7FA)
 private val DarkColorPalette = darkColorScheme(
     background= black ,
     surface = blue,
-    primary = black,
+    primary = white,
     secondary = blueText
 )
 

@@ -6,15 +6,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,10 +46,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.ShaderBrush
@@ -51,17 +59,26 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class LoginDesing {
     @Preview
@@ -141,20 +158,7 @@ class LoginDesing {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
-                        Text(
-                            text = "Ingreso",
-                            color = Color.Black,
-                            modifier = Modifier
-                                .align(Alignment.Start)
-                                .drawBehind {
-                                    drawLine(
-                                        color = Color.Blue,
-                                        start = Offset(0f, size.height),
-                                        end = Offset(size.width, size.height),
-                                        strokeWidth = 2.dp.toPx()
-                                    )
-                                }
-                        )
+                        IngresoText()
                         Spacer(modifier = Modifier.height(32.dp))
                         OutlinedTextField(
                             value = mail,
@@ -193,7 +197,7 @@ class LoginDesing {
                             }
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -204,29 +208,47 @@ class LoginDesing {
                                     checked = rememberMe,
                                     onCheckedChange = { rememberMe = it }
                                 )
-                                Text("Recordarme")
+                                Text("Recordarme", color = MaterialTheme.colorScheme.primary)
                             }
                             TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
-                                Text("Contraseña olvidada?", color = Color.Blue)
+                                Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = { /* Acción de ingreso */ },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors()
+                            modifier = Modifier
+                                .width(250.dp)
+                                .height(20.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                            contentPadding = PaddingValues(0.dp) // Remove default padding
                         ) {
-                            Text("Ingresar", color = Color.White)
+                            Text(
+                                "Ingresar",
+                                color = MaterialTheme.colorScheme.background,
+                                fontSize = 10.sp, // Reduced font size to fit in the small button
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center, // Center the text horizontally
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                            )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("No tienes una cuenta?")
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End // This aligns the content to the left
+                        ) {
+                            Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
                             TextButton(onClick = { /* Acción de registro */ }) {
-                                Text("Registrarse", color = Color.Blue)
+                                Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        Logo(size = 100.dp)
+                        Logo(size = 50.dp)
                     }
                 }
             }
@@ -253,6 +275,48 @@ class LoginDesing {
                         .clip(shape = RectangleShape)
                 )
             }
+        }
+    }
+
+
+    @Composable
+    fun IngresoText() {
+        val secondaryColor = MaterialTheme.colorScheme.secondary.toArgb()
+
+        val paint = android.graphics.Paint().apply {
+            textSize = 25f
+            color = secondaryColor
+            strokeWidth = 4f  // Ajusta este valor para hacer la línea más gruesa
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()  // Ocupa todo el ancho disponible
+                .padding(16.dp)
+        ) {
+            BasicText(
+                text = "Ingreso",
+                style = TextStyle(
+                    color = Color(secondaryColor),
+                    fontSize = 25.sp
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterStart)  // Alinea el texto a la izquierda
+                    .drawWithContent {
+                        drawContent()
+                        drawIntoCanvas { canvas ->
+                            // Medir el ancho del texto "Ingre"
+                            val width = paint.measureText("Ingreso")
+                            canvas.nativeCanvas.drawLine(
+                                0f,
+                                size.height,
+                                140f,
+                                size.height,
+                                paint
+                            )
+                        }
+                    }
+            )
         }
     }
 }
