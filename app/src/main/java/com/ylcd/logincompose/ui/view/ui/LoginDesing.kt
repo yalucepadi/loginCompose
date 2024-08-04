@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -39,16 +41,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
@@ -56,7 +66,7 @@ import com.ylcd.logincompose.ui.theme.AppComposeTheme
 class LoginDesing {
     @Preview
     @Composable
-    fun LoginScreen(){
+    fun LoginScreen() {
         AppComposeTheme {
             var mail by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
@@ -69,61 +79,68 @@ class LoginDesing {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Fondo con degradado y logo
+                    // Background with image
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(Color(0xFF8080FF), Color.White),
-                                    startY = 0f,
-                                    endY = 1000f
-                                )
-                            )
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        // Forma de onda
+                        val imageBitmap: ImageBitmap = ImageBitmap.imageResource(id = R.drawable.textura)
+
+                        // Wave shape
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val path = Path()
 
-                            // Punto de inicio
-                            path.moveTo(0f, size.height * 0.35f)
+                            // Starting point
+                            path.moveTo(0f, 0f)
 
-                            // Curva ondeada
+                            // Add top edge to the path
+                            path.lineTo(size.width, 0f)
+
+                            // Wavy curve
+                            path.lineTo(size.width, size.height * 0.35f)
                             path.cubicTo(
-                                size.width * 0.25f, size.height * 0.25f,  // Primer punto de control
-                                size.width * 0.75f, size.height * 0.45f,  // Segundo punto de control
-                                size.width, size.height * 0.35f           // Punto final
+                                size.width * 0.75f, size.height * 0.45f,  // First control point
+                                size.width * 0.25f, size.height * 0.25f,  // Second control point
+                                0f, size.height * 0.35f                   // End point
                             )
 
-                            // Completar la forma
-                            path.lineTo(size.width, size.height)
-                            path.lineTo(0f, size.height)
+                            // Close the path
                             path.close()
 
-                            // Dibujar la forma
+                            // Create a shader from the imageBitmap
+                            val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
+
+                            // Create a brush from the shader
+                            val brush = ShaderBrush(shader)
+
+                            // Draw the path with the textured brush
                             drawPath(
                                 path = path,
-                                color = Color.White
+                                brush = brush
                             )
                         }
-                        // Logo colocado en la parte superior
+
+                        // Logo placed at the top
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 80.dp),  // Ajusta este valor según sea necesario
+                                .padding(top = 80.dp),  // Adjust this value as needed
                             contentAlignment = Alignment.TopCenter
                         ) {
-                            Logo()
-                        }}
-
+                            Logo(size = 200.dp)
+                        }
+                    }
+                }
+            }
                     // Contenido principal
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
                             .padding(24.dp),
-                        verticalArrangement = Arrangement.Bottom,
+                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
                         Text(
                             text = "Ingreso",
                             color = Color.Black,
@@ -208,17 +225,20 @@ class LoginDesing {
                                 Text("Registrarse", color = Color.Blue)
                             }
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Logo(size = 100.dp)
                     }
                 }
             }
-        }
-    }
+
+
+
 
     @Composable
-    fun Logo() {
+    fun Logo(size: Dp) {
         Box(
             modifier = Modifier
-                .size(120.dp)
+                .size(size)  // Usa el parámetro size
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -229,8 +249,8 @@ class LoginDesing {
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .size(100.dp)
-                        .clip(shape = RectangleShape)  //
+                        .size(size)  // Usa el parámetro size para el tamaño de la imagen
+                        .clip(shape = RectangleShape)
                 )
             }
         }
