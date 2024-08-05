@@ -148,110 +148,110 @@ class LoginDesing {
                     }
                 }
             }
-                    // Contenido principal
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(24.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
-                        IngresoText()
-                        Spacer(modifier = Modifier.height(32.dp))
-                        OutlinedTextField(
-                            value = mail,
-                            onValueChange = { mail = it },
-                            label = { Text("Correo electrónico") },
-                            placeholder = { Text("Ingresar correo electrónico") },
-                            modifier = Modifier.fillMaxWidth(),
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+            // Contenido principal
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
+                IngresoText()
+                Spacer(modifier = Modifier.height(32.dp))
+                OutlinedTextField(
+                    value = mail,
+                    onValueChange = { mail = it },
+                    label = { Text("Correo electrónico") },
+                    placeholder = { Text("Ingresar correo electrónico") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = { Text("Contraseña") },
-                            singleLine = true,
-                            placeholder = { Text("Ej: abcABC#123") },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
-                            ),
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp),
-                            trailingIcon = {
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(
-                                        painter = if (passwordVisible) painterResource(id = R.drawable.visibility) else painterResource(
-                                            id = R.drawable.visibility_off
-                                        ),
-                                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-                                    )
-                                }
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Checkbox(
-                                    checked = rememberMe,
-                                    onCheckedChange = { rememberMe = it }
-                                )
-                                Text("Recordarme", color = MaterialTheme.colorScheme.primary)
-                            }
-                            TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
-                                Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = { /* Acción de ingreso */ },
-                            modifier = Modifier
-                                .width(250.dp)
-                                .height(20.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                            contentPadding = PaddingValues(0.dp) // Remove default padding
-                        ) {
-                            Text(
-                                "Ingresar",
-                                color = MaterialTheme.colorScheme.background,
-                                fontSize = 10.sp, // Reduced font size to fit in the small button
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center, // Center the text horizontally
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Contraseña") },
+                    singleLine = true,
+                    placeholder = { Text("Ej: abcABC#123") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                painter = if (passwordVisible) painterResource(id = R.drawable.visibility) else painterResource(
+                                    id = R.drawable.visibility_off
+                                ),
+                                contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                             )
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End // This aligns the content to the left
-                        ) {
-                            Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
-                            TextButton(onClick = { /* Acción de registro */ }) {
-                                Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Logo(size = 50.dp)
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = rememberMe,
+                            onCheckedChange = { rememberMe = it }
+                        )
+                        Text("Recordarme", color = MaterialTheme.colorScheme.primary)
+                    }
+                    TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
+                        Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { /* Acción de ingreso */ },
+                    modifier = Modifier
+                        .width(250.dp)
+                        .height(30.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                    contentPadding = PaddingValues(0.dp) // Remove default padding
+                ) {
+                    Text(
+                        "Ingresar",
+                        color = MaterialTheme.colorScheme.background,
+                        fontSize = 15.sp, // Reduced font size to fit in the small button
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center, // Center the text horizontally
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End // This aligns the content to the left
+                ) {
+                    Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
+                    TextButton(onClick = { /* Acción de registro */ }) {
+                        Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Logo(size = 50.dp)
             }
+        }
+    }
 
 
 
@@ -286,13 +286,13 @@ class LoginDesing {
         val paint = android.graphics.Paint().apply {
             textSize = 25f
             color = secondaryColor
-            strokeWidth = 4f  // Ajusta este valor para hacer la línea más gruesa
+            strokeWidth = 5f  // Adjust this value to make the line thicker
         }
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()  // Ocupa todo el ancho disponible
-                .padding(16.dp)
+                .fillMaxWidth()  // Occupies the entire available width
+                .padding(start = 0.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)  // Adjust the start padding to move the text to the left
         ) {
             BasicText(
                 text = "Ingreso",
@@ -301,17 +301,18 @@ class LoginDesing {
                     fontSize = 25.sp
                 ),
                 modifier = Modifier
-                    .align(Alignment.CenterStart)  // Alinea el texto a la izquierda
+                    .align(Alignment.CenterStart)  // Aligns the text to the left
                     .drawWithContent {
                         drawContent()
                         drawIntoCanvas { canvas ->
-                            // Medir el ancho del texto "Ingre"
+                            // Measure the width of the text "Ingreso"
                             val width = paint.measureText("Ingreso")
+                            val yPosition = size.height + 12f  // Lower the line by 5 pixels
                             canvas.nativeCanvas.drawLine(
-                                0f,
-                                size.height,
-                                140f,
-                                size.height,
+                                1f,
+                                yPosition,
+                                140f,  // Adjust the end point to the text width
+                                yPosition,
                                 paint
                             )
                         }
@@ -319,4 +320,5 @@ class LoginDesing {
             )
         }
     }
+
 }
