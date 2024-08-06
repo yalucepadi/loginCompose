@@ -81,17 +81,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ylcd.logincompose.ui.view.navigation.Screen
+import com.ylcd.logincompose.util.Validations
 
 class LoginDesing {
 
     @Composable
     fun LoginScreen(navController: NavController) {
         AppComposeTheme {
+
+            var validations: Validations = Validations()
             var mail by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var rememberMe by remember { mutableStateOf(false) }
             var passwordVisible by remember { mutableStateOf(false) }
-
+            var errorMessageMail by remember { mutableStateOf("") }
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -164,12 +167,25 @@ class LoginDesing {
                 Spacer(modifier = Modifier.height(32.dp))
                 OutlinedTextField(
                     value = mail,
-                    onValueChange = { mail = it },
+                    onValueChange = { mail = it
+                        errorMessageMail =
+                            if (validations.isValidEmail(it)) "" else "Correo inválido"
+                                    },
                     label = { Text("Correo electrónico") },
                     placeholder = { Text("Ingresar correo electrónico") },
                     modifier = Modifier.fillMaxWidth(),
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) }
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                            isError = errorMessageMail.isNotEmpty()
                 )
+
+                if (errorMessageMail.isNotEmpty()) {
+                    Text(
+                        text = errorMessageMail,
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(

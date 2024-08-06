@@ -66,7 +66,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,12 +73,14 @@ import androidx.navigation.NavController
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
 import com.ylcd.logincompose.ui.view.navigation.Screen
+import com.ylcd.logincompose.util.Validations
 
 class RegisterDesing {
 
     @Composable
     fun RegisterScreen(navController: NavController) {
         AppComposeTheme {
+            var validations: Validations = Validations()
             var mail by remember { mutableStateOf("") }
             var tel by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
@@ -104,7 +105,8 @@ class RegisterDesing {
                             .fillMaxSize()
                             .padding(bottom = 1.dp) // Ensure the content is below the wave curve
                     ) {
-                        val imageBitmap: ImageBitmap = ImageBitmap.imageResource(id = R.drawable.textura)
+                        val imageBitmap: ImageBitmap =
+                            ImageBitmap.imageResource(id = R.drawable.textura)
 
                         // Wave shape
                         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -117,7 +119,10 @@ class RegisterDesing {
                             path.lineTo(size.width, 0f)
 
                             // Wavy curve
-                            path.lineTo(size.width, size.height * 0.2f) // Reduced height of the wave
+                            path.lineTo(
+                                size.width,
+                                size.height * 0.2f
+                            ) // Reduced height of the wave
                             path.cubicTo(
                                 size.width * 0.75f, size.height * 0.3f,  // First control point
                                 size.width * 0.25f, size.height * 0.1f,  // Second control point
@@ -128,7 +133,8 @@ class RegisterDesing {
                             path.close()
 
                             // Create a shader from the imageBitmap
-                            val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
+                            val shader =
+                                ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
 
                             // Create a brush from the shader
                             val brush = ShaderBrush(shader)
@@ -165,9 +171,11 @@ class RegisterDesing {
                     Spacer(modifier = Modifier.height(32.dp))
                     OutlinedTextField(
                         value = mail,
-                        onValueChange = { mail = it
-                                        errorMessageMail = if (isValidEmail(it)) "" else "Correo inválido"
-                                        },
+                        onValueChange = {
+                            mail = it
+                            errorMessageMail =
+                                if (validations.isValidEmail(it)) "" else "Correo inválido"
+                        },
                         label = { Text("Correo electrónico") },
                         placeholder = { Text("Ingresar correo electrónico") },
                         modifier = Modifier.fillMaxWidth(),
@@ -189,8 +197,10 @@ class RegisterDesing {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = tel,
-                        onValueChange = { tel = it
-                            errorMessageTel = if (isValidPhoneNumber(it)) "" else "Número inválido"
+                        onValueChange = {
+                            tel = it
+                            errorMessageTel =
+                                if (validations.isValidPhoneNumber(it)) "" else "Número inválido"
 
                         },
                         label = { Text("Número de teléfono") },
@@ -210,10 +220,16 @@ class RegisterDesing {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = password,
-                        onValueChange = { password = it
-                            errorMessagePass = if (isValidPassword(it)) "" else "Contraseña débil"
-                            errorMessageConfirmPass = if (passwordsMatch(it, confirmPassword)) "" else "Las contraseñas no coinciden"
-                                        },
+                        onValueChange = {
+                            password = it
+                            errorMessagePass =
+                                if (validations.isValidPassword(it)) "" else "Contraseña débil"
+                            errorMessageConfirmPass = if (validations.passwordsMatch(
+                                    it,
+                                    confirmPassword
+                                )
+                            ) "" else "Las contraseñas no coinciden"
+                        },
                         label = { Text("Contraseña") },
                         singleLine = true,
                         placeholder = { Text("Ej: abcABC#123") },
@@ -235,7 +251,7 @@ class RegisterDesing {
                                     contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                                 )
                             }
-                        } ,
+                        },
                         isError = errorMessagePass.isNotEmpty()
 
 
@@ -251,8 +267,13 @@ class RegisterDesing {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = confirmPassword,
-                        onValueChange = { confirmPassword = it
-                            errorMessageConfirmPass = if (passwordsMatch(password, it)) "" else "Las contraseñas no coinciden"
+                        onValueChange = {
+                            confirmPassword = it
+                            errorMessageConfirmPass = if (validations.passwordsMatch(
+                                    password,
+                                    it
+                                )
+                            ) "" else "Las contraseñas no coinciden"
 
                         },
                         label = { Text("Confirmar contraseña") },
@@ -276,7 +297,7 @@ class RegisterDesing {
                                     contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                                 )
                             }
-                        } ,
+                        },
                         isError = errorMessageConfirmPass.isNotEmpty()
                     )
                     if (errorMessageConfirmPass.isNotEmpty()) {
@@ -393,7 +414,12 @@ class RegisterDesing {
         Box(
             modifier = Modifier
                 .fillMaxWidth()  // Occupies the entire available width
-                .padding(start = 0.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)  // Adjust the start padding to move the text to the left
+                .padding(
+                    start = 0.dp,
+                    top = 16.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                )  // Adjust the start padding to move the text to the left
         ) {
             BasicText(
                 text = "Registro",
@@ -424,22 +450,3 @@ class RegisterDesing {
 
 }
 
-fun isValidEmail(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-}
-fun isValidPhoneNumber(phone: String): Boolean {
-    val regex = """\+\d{1,3} \d{8,9}""".toRegex()
-    return regex.matches(phone)
-}
-
-
-fun isValidPassword(password: String): Boolean {
-    // Regex to check the password format: at least one lowercase letter, one uppercase letter,
-    // one digit, and one special character, and a minimum length of 8 characters
-    val regex = """^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$""".toRegex()
-    return regex.matches(password)
-}
-
-fun passwordsMatch(password: String, confirmPassword: String): Boolean {
-    return password == confirmPassword
-}
