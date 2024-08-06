@@ -79,11 +79,13 @@ import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.ylcd.logincompose.ui.view.navigation.Screen
 
 class LoginDesing {
-    @Preview
+
     @Composable
-    fun LoginScreen() {
+    fun LoginScreen(navController: NavController) {
         AppComposeTheme {
             var mail by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
@@ -243,7 +245,7 @@ class LoginDesing {
                     horizontalArrangement = Arrangement.End // This aligns the content to the left
                 ) {
                     Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
-                    TextButton(onClick = { /* Acción de registro */ }) {
+                    TextButton(onClick = { navController.navigate(Screen.RegisterScreen.route)}) {
                         Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
                     }
                 }

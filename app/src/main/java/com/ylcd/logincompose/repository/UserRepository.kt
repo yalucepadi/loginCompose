@@ -1,12 +1,14 @@
 package com.ylcd.logincompose.repository
 
+import com.ylcd.logincompose.db.RemenberDao
 import com.ylcd.logincompose.db.RoomDb
 import com.ylcd.logincompose.db.UserDao
 import com.ylcd.logincompose.model.User
+import com.ylcd.logincompose.model.UserRemenber
 import com.ylcd.logincompose.model.operation.UserCredentials
 import kotlinx.coroutines.flow.Flow
 
-class UserRepository(private val roomDb: RoomDb) : UserDao{
+class UserRepository(private val roomDb: RoomDb) : UserDao,RemenberDao{
     override fun getUsers(): Flow<List<User>> {
         return roomDb.userDao().getUsers()
     }
@@ -26,4 +28,10 @@ class UserRepository(private val roomDb: RoomDb) : UserDao{
     override suspend fun getEmailAndPassword(email: String, password: String): UserCredentials? {
         return roomDb.userDao().getEmailAndPassword(email, password)
     }
+
+    override fun getStateByUserId(id: Int): UserRemenber {
+        return roomDb.remenberDao().getStateByUserId(id)
+    }
+
+
 }

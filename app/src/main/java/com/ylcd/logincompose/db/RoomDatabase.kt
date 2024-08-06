@@ -5,14 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ylcd.logincompose.model.User
+import com.ylcd.logincompose.model.UserRemenber
 import kotlinx.coroutines.CoroutineScope
 
 
-@Database(entities = [User::class],
-    version = 1,exportSchema = false)
+@Database(entities = [User::class, UserRemenber::class],
+    version = 2,exportSchema = false)
 abstract class RoomDb : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+    abstract fun remenberDao():RemenberDao
 
     companion object {
         private var INSTANCE: RoomDb? = null

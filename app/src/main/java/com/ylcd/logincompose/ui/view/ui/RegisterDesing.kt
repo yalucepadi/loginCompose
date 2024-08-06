@@ -70,20 +70,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
+import com.ylcd.logincompose.ui.view.navigation.Screen
 
 class RegisterDesing {
 
-    @Preview
     @Composable
-    fun RegisterScreen() {
+    fun RegisterScreen(navController: NavController) {
         AppComposeTheme {
             var mail by remember { mutableStateOf("") }
             var tel by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var confirmPassword by remember { mutableStateOf("") }
             var passwordVisible by remember { mutableStateOf(false) }
+
+            var errorMessageMail by remember { mutableStateOf("") }
+            var errorMessageTel by remember { mutableStateOf("") }
+            var errorMessagePass by remember { mutableStateOf("") }
+            var errorMessageConfirmPass by remember { mutableStateOf("") }
+
 
             Surface(
                 color = MaterialTheme.colorScheme.background
@@ -158,25 +165,55 @@ class RegisterDesing {
                     Spacer(modifier = Modifier.height(32.dp))
                     OutlinedTextField(
                         value = mail,
-                        onValueChange = { mail = it },
+                        onValueChange = { mail = it
+                                        errorMessageMail = if (isValidEmail(it)) "" else "Correo inválido"
+                                        },
                         label = { Text("Correo electrónico") },
                         placeholder = { Text("Ingresar correo electrónico") },
                         modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) }
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                        isError = errorMessageMail.isNotEmpty()
+
                     )
+
+                    if (errorMessageMail.isNotEmpty()) {
+                        Text(
+                            text = errorMessageMail,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
+
+
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = tel,
-                        onValueChange = { tel = it },
+                        onValueChange = { tel = it
+                            errorMessageTel = if (isValidPhoneNumber(it)) "" else "Número inválido"
+
+                        },
                         label = { Text("Número de teléfono") },
-                        placeholder = { Text("+54 12345678") },
+                        placeholder = { Text("Ej: +54 12345678") },
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = { Icon(Icons.Default.Call, contentDescription = null) }
                     )
+
+                    if (errorMessageTel.isNotEmpty()) {
+                        Text(
+                            text = errorMessageTel,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = { password = it
+                            errorMessagePass = if (isValidPassword(it)) "" else "Contraseña débil"
+                            errorMessageConfirmPass = if (passwordsMatch(it, confirmPassword)) "" else "Las contraseñas no coinciden"
+                                        },
                         label = { Text("Contraseña") },
                         singleLine = true,
                         placeholder = { Text("Ej: abcABC#123") },
@@ -198,12 +235,26 @@ class RegisterDesing {
                                     contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                                 )
                             }
-                        }
+                        } ,
+                        isError = errorMessagePass.isNotEmpty()
+
+
                     )
+                    if (errorMessagePass.isNotEmpty()) {
+                        Text(
+                            text = errorMessagePass,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = confirmPassword,
-                        onValueChange = { confirmPassword = it },
+                        onValueChange = { confirmPassword = it
+                            errorMessageConfirmPass = if (passwordsMatch(password, it)) "" else "Las contraseñas no coinciden"
+
+                        },
                         label = { Text("Confirmar contraseña") },
                         singleLine = true,
                         placeholder = { Text("Reingresar contraseña") },
@@ -225,8 +276,18 @@ class RegisterDesing {
                                     contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                                 )
                             }
-                        }
+                        } ,
+                        isError = errorMessageConfirmPass.isNotEmpty()
                     )
+                    if (errorMessageConfirmPass.isNotEmpty()) {
+                        Text(
+                            text = errorMessageConfirmPass,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = { /* Acción de ingreso */ },
@@ -273,7 +334,7 @@ class RegisterDesing {
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.End
                             )
-                            TextButton(onClick = { /* Acción de registro */ }) {
+                            TextButton(onClick = { navController.navigate(Screen.MainScreen.route) }) {
                                 Text(
                                     "Ingresar",
                                     color = MaterialTheme.colorScheme.secondary,
@@ -361,4 +422,24 @@ class RegisterDesing {
         }
     }
 
+}
+
+fun isValidEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+fun isValidPhoneNumber(phone: String): Boolean {
+    val regex = """\+\d{1,3} \d{8,9}""".toRegex()
+    return regex.matches(phone)
+}
+
+
+fun isValidPassword(password: String): Boolean {
+    // Regex to check the password format: at least one lowercase letter, one uppercase letter,
+    // one digit, and one special character, and a minimum length of 8 characters
+    val regex = """^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$""".toRegex()
+    return regex.matches(password)
+}
+
+fun passwordsMatch(password: String, confirmPassword: String): Boolean {
+    return password == confirmPassword
 }
