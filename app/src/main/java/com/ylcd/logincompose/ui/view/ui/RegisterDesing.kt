@@ -91,6 +91,7 @@ class RegisterDesing {
             var errorMessageTel by remember { mutableStateOf("") }
             var errorMessagePass by remember { mutableStateOf("") }
             var errorMessageConfirmPass by remember { mutableStateOf("") }
+            var showErrorMessages by remember { mutableStateOf(false) }
 
 
             Surface(
@@ -180,11 +181,11 @@ class RegisterDesing {
                         placeholder = { Text("Ingresar correo electrónico") },
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                        isError = errorMessageMail.isNotEmpty()
+                        isError = errorMessageMail.isNotEmpty() && showErrorMessages
 
                     )
 
-                    if (errorMessageMail.isNotEmpty()) {
+                    if (showErrorMessages && errorMessageMail.isNotEmpty()) {
                         Text(
                             text = errorMessageMail,
                             color = Color.Red,
@@ -206,10 +207,12 @@ class RegisterDesing {
                         label = { Text("Número de teléfono") },
                         placeholder = { Text("Ej: +54 12345678") },
                         modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = { Icon(Icons.Default.Call, contentDescription = null) }
+                        leadingIcon = { Icon(Icons.Default.Call, contentDescription = null) },
+                        isError = errorMessageTel.isNotEmpty() && showErrorMessages
+
                     )
 
-                    if (errorMessageTel.isNotEmpty()) {
+                    if (showErrorMessages && errorMessageTel.isNotEmpty()) {
                         Text(
                             text = errorMessageTel,
                             color = Color.Red,
@@ -217,6 +220,8 @@ class RegisterDesing {
                             modifier = Modifier.align(Alignment.End)
                         )
                     }
+
+
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = password,
@@ -252,11 +257,11 @@ class RegisterDesing {
                                 )
                             }
                         },
-                        isError = errorMessagePass.isNotEmpty()
+                        isError = errorMessagePass.isNotEmpty() && showErrorMessages
 
 
                     )
-                    if (errorMessagePass.isNotEmpty()) {
+                  if (showErrorMessages && errorMessagePass.isNotEmpty()) {
                         Text(
                             text = errorMessagePass,
                             color = Color.Red,
@@ -264,6 +269,8 @@ class RegisterDesing {
                             modifier = Modifier.align(Alignment.End)
                         )
                     }
+
+
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = confirmPassword,
@@ -298,9 +305,10 @@ class RegisterDesing {
                                 )
                             }
                         },
-                        isError = errorMessageConfirmPass.isNotEmpty()
+                        isError = errorMessageConfirmPass.isNotEmpty() && showErrorMessages
                     )
-                    if (errorMessageConfirmPass.isNotEmpty()) {
+
+                    if (showErrorMessages && errorMessageConfirmPass.isNotEmpty()) {
                         Text(
                             text = errorMessageConfirmPass,
                             color = Color.Red,
@@ -311,7 +319,28 @@ class RegisterDesing {
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* Acción de ingreso */ },
+                        onClick = {
+                            // Perform validations when button is clicked
+                            showErrorMessages = true
+                            errorMessageMail =
+                                if (validations.isValidEmail(mail)) "" else "Correo inválido"
+                            errorMessageTel =
+                                if (validations.isValidPhoneNumber(tel)) "" else "Número inválido"
+                            errorMessagePass =
+                                if (validations.isValidPassword(password)) "" else "Contraseña débil"
+                            errorMessageConfirmPass =
+                                if (validations.passwordsMatch(
+                                        password,
+                                        confirmPassword
+                                    )
+                                ) "" else "Las contraseñas no coinciden"
+
+                            if (errorMessageMail.isEmpty() && errorMessageTel.isEmpty() &&
+                                errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()) {
+                                // All validations passed, proceed with registration
+                                navController.navigate(Screen.MainScreen.route)
+                            }
+                        },
                         modifier = Modifier
                             .width(300.dp)
                             .height(40.dp),  // Adjusted height for better appearance

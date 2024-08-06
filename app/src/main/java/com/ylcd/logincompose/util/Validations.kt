@@ -7,7 +7,8 @@ class Validations {
 
     fun isValidPhoneNumber(phone: String): Boolean {
         val regex = """\+\d{1,3} \d{8,9}""".toRegex()
-        return regex.matches(phone)
+        return regex.matches(phone) && phone.substring(1).replace(" ", "")
+            .all { it.isDigit() }
     }
 
 

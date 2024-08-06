@@ -95,6 +95,7 @@ class LoginDesing {
             var rememberMe by remember { mutableStateOf(false) }
             var passwordVisible by remember { mutableStateOf(false) }
             var errorMessageMail by remember { mutableStateOf("") }
+            var showErrorMessages by remember { mutableStateOf(false) }
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -175,10 +176,10 @@ class LoginDesing {
                     placeholder = { Text("Ingresar correo electrónico") },
                     modifier = Modifier.fillMaxWidth(),
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                            isError = errorMessageMail.isNotEmpty()
+                            isError = errorMessageMail.isNotEmpty() && showErrorMessages
                 )
 
-                if (errorMessageMail.isNotEmpty()) {
+                if (errorMessageMail.isNotEmpty() && showErrorMessages) {
                     Text(
                         text = errorMessageMail,
                         color = Color.Red,
@@ -234,7 +235,11 @@ class LoginDesing {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = { /* Acción de ingreso */ },
+                    onClick = {    showErrorMessages = true
+                        errorMessageMail =
+                            if (validations.isValidEmail(mail)) "" else "Correo inválido"
+
+                              },
                     modifier = Modifier
                         .width(250.dp)
                         .height(30.dp),
