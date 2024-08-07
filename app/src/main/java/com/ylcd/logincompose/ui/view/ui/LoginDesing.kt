@@ -2,7 +2,6 @@ package com.ylcd.logincompose.ui.view.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -38,7 +35,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,42 +42,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ylcd.logincompose.ui.view.fragments.LoginFragment
 import com.ylcd.logincompose.ui.view.navigation.Screen
 import com.ylcd.logincompose.util.Validations
@@ -109,47 +96,48 @@ class LoginDesing {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Background with image
+
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val imageBitmap: ImageBitmap = ImageBitmap.imageResource(id = R.drawable.textura)
+                        val imageBitmap: ImageBitmap =
+                            ImageBitmap.imageResource(id = R.drawable.textura)
 
                         // Wave shape
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val path = Path()
 
-                            // Starting point
+
                             path.moveTo(0f, 0f)
 
-                            // Add top edge to the path
+
                             path.lineTo(size.width, 0f)
 
-                            // Wavy curve
+
                             path.lineTo(size.width, size.height * 0.35f)
                             path.cubicTo(
-                                size.width * 0.75f, size.height * 0.45f,  // First control point
-                                size.width * 0.25f, size.height * 0.25f,  // Second control point
-                                0f, size.height * 0.35f                   // End point
+                                size.width * 0.75f, size.height * 0.45f,
+                                size.width * 0.25f, size.height * 0.25f,
+                                0f, size.height * 0.35f
                             )
 
-                            // Close the path
+
                             path.close()
 
-                            // Create a shader from the imageBitmap
-                            val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
 
-                            // Create a brush from the shader
+                            val shader =
+                                ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
+
                             val brush = ShaderBrush(shader)
 
-                            // Draw the path with the textured brush
+
                             drawPath(
                                 path = path,
                                 brush = brush
                             )
                         }
 
-                        // Logo placed at the top
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -169,16 +157,17 @@ class LoginDesing {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
+                    Spacer(modifier = Modifier.height(250.dp))
                     IngresoText()
                     Spacer(modifier = Modifier.height(32.dp))
                     OutlinedTextField(
                         value = mail,
                         onValueChange = {
                             mail = it
-                            errorMessageMail = if (validations.isValidEmail(it)) "" else "Correo inválido"
+                            errorMessageMail =
+                                if (validations.isValidEmail(it)) "" else "Correo inválido"
 
-                            // Llamar a obtenertoCompare solo si el email no está vacío y es válido
+
                             if (it.isNotEmpty() && validations.isValidEmail(it)) {
                                 loginFragment.obtenertoCompare(it, context) { passR ->
                                     passwordR = passR
@@ -251,9 +240,10 @@ class LoginDesing {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = rememberMe,
-                                onCheckedChange = { rememberMe = it
-                                    if(it==true){
-                                    loginFragment.remenmber(context)
+                                onCheckedChange = {
+                                    rememberMe = it
+                                    if (it == true) {
+                                        loginFragment.remenmber(context)
 
                                     }
 
@@ -261,17 +251,25 @@ class LoginDesing {
                             )
                             Text("Recordarme", color = MaterialTheme.colorScheme.primary)
                         }
-                        TextButton(onClick = {loginFragment.contacSupport(context)}) {
-                            Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
+                        TextButton(onClick = { loginFragment.contacSupport(context) }) {
+                            Text(
+                                "Contraseña olvidada?",
+                                color = MaterialTheme.colorScheme.secondary
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
                             showErrorMessages = true
-                            errorMessageMail = if (validations.isValidEmail(mail)) "" else "Correo inválido"
+                            errorMessageMail =
+                                if (validations.isValidEmail(mail)) "" else "Correo inválido"
 
-                            errorPassword = if (validations.passwordsMatch(password, passwordR)) "" else "Contraseña incorrecta"
+                            errorPassword = if (validations.passwordsMatch(
+                                    password,
+                                    passwordR
+                                )
+                            ) "" else "Contraseña incorrecta"
                             if (errorPassword.isEmpty() && errorMessageMail.isEmpty()) {
                                 navController.navigate(Screen.ProfileScreen.withArg(mail))
                             }
@@ -283,25 +281,25 @@ class LoginDesing {
                             .height(30.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                        contentPadding = PaddingValues(0.dp) // Remove default padding
+                        contentPadding = PaddingValues(0.dp)
                     ) {
                         Text(
                             "Ingresar",
                             color = MaterialTheme.colorScheme.background,
-                            fontSize = 15.sp, // Reduced font size to fit in the small button
+                            fontSize = 15.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center, // Center the text horizontally
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                                .wrapContentHeight(Alignment.CenterVertically)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End // This aligns the content to the left
+                        horizontalArrangement = Arrangement.End
                     ) {
                         Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
                         TextButton(onClick = { navController.navigate(Screen.RegisterScreen.route) }) {
@@ -319,7 +317,7 @@ class LoginDesing {
     fun Logo(size: Dp) {
         Box(
             modifier = Modifier
-                .size(size)  // Usa el parámetro size
+                .size(size)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -330,7 +328,7 @@ class LoginDesing {
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .size(size)  // Usa el parámetro size para el tamaño de la imagen
+                        .size(size)
                         .clip(shape = RectangleShape)
                 )
             }
@@ -344,18 +342,18 @@ class LoginDesing {
         val paint = android.graphics.Paint().apply {
             textSize = 25f
             color = secondaryColor
-            strokeWidth = 5f  // Adjust this value to make the line thicker
+            strokeWidth = 5f
         }
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()  // Occupies the entire available width
+                .fillMaxWidth()
                 .padding(
                     start = 0.dp,
                     top = 16.dp,
                     end = 16.dp,
                     bottom = 16.dp
-                )  // Adjust the start padding to move the text to the left
+                )
         ) {
             BasicText(
                 text = "Ingreso",
@@ -364,17 +362,17 @@ class LoginDesing {
                     fontSize = 25.sp
                 ),
                 modifier = Modifier
-                    .align(Alignment.CenterStart)  // Aligns the text to the left
+                    .align(Alignment.CenterStart)
                     .drawWithContent {
                         drawContent()
                         drawIntoCanvas { canvas ->
-                            // Measure the width of the text "Ingreso"
+
                             val width = paint.measureText("Ingreso")
-                            val yPosition = size.height + 12f  // Lower the line by 5 pixels
+                            val yPosition = size.height + 12f
                             canvas.nativeCanvas.drawLine(
                                 1f,
                                 yPosition,
-                                140f,  // Adjust the end point to the text width
+                                140f,
                                 yPosition,
                                 paint
                             )

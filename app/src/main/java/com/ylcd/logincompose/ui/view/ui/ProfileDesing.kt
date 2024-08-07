@@ -58,15 +58,15 @@ class ProfileDesing {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Background Image
+
                 Image(
                     painter = rememberAsyncImagePainter(selectedUri),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop // This ensures the image covers the entire screen
+                    contentScale = ContentScale.Crop
                 )
 
-                // Content
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -78,7 +78,7 @@ class ProfileDesing {
                         text = "Bienvenido, $email!",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White // Changed to white for better visibility on the background
+                        color = Color.White
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -87,7 +87,7 @@ class ProfileDesing {
                         text = "Elige un fondo de pantalla:",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White // Changed to white for better visibility on the background
+                        color = Color.White
                     )
 
                     Row(
@@ -106,7 +106,7 @@ class ProfileDesing {
                             Icon(
                                 Icons.Default.AddCircle,
                                 contentDescription = null,
-                                tint = Color.White // Changed to white for better visibility on the background
+                                tint = Color.White
                             )
                         }
                     }

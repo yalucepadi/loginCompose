@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -103,54 +102,54 @@ class RegisterDesing {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Background with image and wave shape
+
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(bottom = 1.dp) // Ensure the content is below the wave curve
+                            .padding(bottom = 1.dp)
                     ) {
                         val imageBitmap: ImageBitmap =
                             ImageBitmap.imageResource(id = R.drawable.textura)
 
-                        // Wave shape
+
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val path = Path()
 
-                            // Starting point
+
                             path.moveTo(0f, 0f)
 
-                            // Add top edge to the path
+
                             path.lineTo(size.width, 0f)
 
-                            // Wavy curve
+
                             path.lineTo(
                                 size.width,
                                 size.height * 0.2f
-                            ) // Reduced height of the wave
+                            )
                             path.cubicTo(
-                                size.width * 0.75f, size.height * 0.3f,  // First control point
-                                size.width * 0.25f, size.height * 0.1f,  // Second control point
-                                0f, size.height * 0.2f                   // End point
+                                size.width * 0.75f, size.height * 0.3f,
+                                size.width * 0.25f, size.height * 0.1f,
+                                0f, size.height * 0.2f
                             )
 
-                            // Close the path
+
                             path.close()
 
-                            // Create a shader from the imageBitmap
+
                             val shader =
                                 ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
 
-                            // Create a brush from the shader
+
                             val brush = ShaderBrush(shader)
 
-                            // Draw the path with the textured brush
+
                             drawPath(
                                 path = path,
                                 brush = brush
                             )
                         }
 
-                        // Logo placed at the top right
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -161,7 +160,7 @@ class RegisterDesing {
                         }
                     }
                 }
-                // Contenido principal
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,7 +169,7 @@ class RegisterDesing {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(90.dp))  // Asegura que el contenido esté debajo de la curva
+                    Spacer(modifier = Modifier.height(90.dp))
                     RegistroText()
                     Spacer(modifier = Modifier.height(32.dp))
                     OutlinedTextField(
@@ -264,7 +263,7 @@ class RegisterDesing {
 
 
                     )
-                  if (showErrorMessages && errorMessagePass.isNotEmpty()) {
+                    if (showErrorMessages && errorMessagePass.isNotEmpty()) {
                         Text(
                             text = errorMessagePass,
                             color = Color.Red,
@@ -337,53 +336,55 @@ class RegisterDesing {
                                         confirmPassword
                                     )
                                 ) "" else "Las contraseñas no coinciden"
-                            val verificar = registerFragment.register(mail.toString(),tel.toString()
-                                ,password.toString(),context)
+                            val verificar = registerFragment.register(
+                                mail.toString(), tel.toString(), password.toString(), context
+                            )
                             if (errorMessageMail.isEmpty() && errorMessageTel.isEmpty() &&
                                 errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()
-                                ) {
-                                if(verificar){
-                                // All validati ons passed, proceed with registration
-                                navController.navigate(Screen.MainScreen.route)}
+                            ) {
+                                if (verificar) {
+
+                                    navController.navigate(Screen.MainScreen.route)
+                                }
                             }
                         },
                         modifier = Modifier
                             .width(300.dp)
-                            .height(40.dp),  // Adjusted height for better appearance
+                            .height(40.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                        contentPadding = PaddingValues(0.dp) // Remove default padding
+                        contentPadding = PaddingValues(0.dp)
                     ) {
                         Text(
                             "Crear cuenta",
                             color = MaterialTheme.colorScheme.background,
-                            fontSize = 16.sp, // Reduced font size to fit in the small button
+                            fontSize = 16.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center, // Center the text horizontally
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                                .wrapContentHeight(Alignment.CenterVertically)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween // Esto distribuirá el contenido con espacio entre ellos
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Logo colocado en el lado izquierdo
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Logo(size = 100.dp) // Tamaño reducido para el logo en la parte inferior
+                            Logo(size = 100.dp)
                             Spacer(modifier = Modifier.width(8.dp))
                         }
 
-                        // Texto "Ya tienes una cuenta?" y "Ingresar" colocado en el lado derecho
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End // Esto alinea el contenido a la derecha
+                            horizontalArrangement = Arrangement.End
                         ) {
                             Text(
                                 "Ya tienes una cuenta?",
@@ -395,15 +396,15 @@ class RegisterDesing {
                                     "Ingresar",
                                     color = MaterialTheme.colorScheme.secondary,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis, // Añade puntos suspensivos si el texto es demasiado largo
+                                    overflow = TextOverflow.Ellipsis,
                                     style = TextStyle(
-                                        fontSize = 12.sp, // Ajusta el tamaño de la fuente según sea necesario
+                                        fontSize = 12.sp,
                                         textAlign = TextAlign.End,
                                         fontWeight = FontWeight.Bold
                                     ),
                                     modifier = Modifier
-                                        .widthIn(min = 32.dp) // Establece un ancho mínimo para el texto
-                                        .wrapContentWidth(Alignment.CenterHorizontally) // Ajusta el ancho del contenido
+                                        .widthIn(min = 32.dp)
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
                                 )
                             }
                         }
@@ -418,7 +419,7 @@ class RegisterDesing {
     fun Logo(size: Dp) {
         Box(
             modifier = Modifier
-                .size(size)  // Usa el parámetro size
+                .size(size)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -429,7 +430,7 @@ class RegisterDesing {
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .size(size)  // Usa el parámetro size para el tamaño de la imagen
+                        .size(size)
                         .clip(shape = RectangleShape)
                 )
             }
@@ -443,18 +444,18 @@ class RegisterDesing {
         val paint = android.graphics.Paint().apply {
             textSize = 25f
             color = secondaryColor
-            strokeWidth = 5f  // Adjust this value to make the line thicker
+            strokeWidth = 5f
         }
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()  // Occupies the entire available width
+                .fillMaxWidth()
                 .padding(
                     start = 0.dp,
                     top = 16.dp,
                     end = 16.dp,
                     bottom = 16.dp
-                )  // Adjust the start padding to move the text to the left
+                )
         ) {
             BasicText(
                 text = "Registro",
@@ -463,17 +464,17 @@ class RegisterDesing {
                     fontSize = 25.sp
                 ),
                 modifier = Modifier
-                    .align(Alignment.CenterStart)  // Aligns the text to the left
+                    .align(Alignment.CenterStart)
                     .drawWithContent {
                         drawContent()
                         drawIntoCanvas { canvas ->
-                            // Measure the width of the text "Registro"
+
                             val width = paint.measureText("Registro")
-                            val yPosition = size.height + 12f  // Lower the line by 5 pixels
+                            val yPosition = size.height + 12f
                             canvas.nativeCanvas.drawLine(
                                 1f,
                                 yPosition,
-                                140f,  // Adjust the end point to the text width
+                                140f,
                                 yPosition,
                                 paint
                             )
