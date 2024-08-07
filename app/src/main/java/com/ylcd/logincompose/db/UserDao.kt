@@ -19,6 +19,7 @@ interface UserDao {
     @Query("SELECT * FROM users where col_id=:id")
     fun getUsersById(id: Int):User
 
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUser(user: User)
 
@@ -26,4 +27,6 @@ interface UserDao {
     @Query("SELECT col_mail, col_password FROM users " +
             "WHERE col_mail = :email AND col_password = :password")
     suspend fun getEmailAndPassword(email: String, password: String): UserCredentials?
+
+
 }

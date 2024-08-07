@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ylcd.logincompose.db.DataBase.Companion.createUser
+import com.ylcd.logincompose.db.DataBase.Companion.selectEmailandPassword
+import com.ylcd.logincompose.db.DataBase.Companion.selectUserByEmail
 import com.ylcd.logincompose.enum.DatabaseType
 import com.ylcd.logincompose.model.User
 import com.ylcd.logincompose.repository.UserRepository
@@ -34,8 +36,8 @@ init {
                when(it){
                  is UserIntent.InsertUser -> insertUser(user)
                    UserIntent.FetchUser -> TODO()
-                   UserIntent.GetEmailAndPassword -> TODO()
-                   UserIntent.GetUserByEmail -> TODO()
+                   UserIntent.GetEmailAndPassword ->getEmailAndPassword(user.mail,user.password)
+                   UserIntent.GetUserByEmail -> getUserByEmail(user.mail)
                    UserIntent.GetUserById -> TODO()
                }
 
@@ -46,7 +48,7 @@ init {
         }
     }
 
-    private fun insertUser(user: User) {
+     fun insertUser(user: User) {
 
         viewModelScope.launch {
              dataStateUser.value = UserState.Loading
@@ -64,6 +66,35 @@ init {
 
         }
 
+    }
+
+    suspend fun getEmailAndPassword(email: String, password: String) {
+        dataStateUser.value = UserState.Loading
+        try {
+            // Llamar a la función para obtener las credenciales del usuario desde la base de datos
+            val userCredentials = selectEmailandPassword(context, DatabaseType.ROOM, email, password)
+
+            // Actualizar el estado con las credenciales obtenidas
+            dataStateUser.value = UserState.GetPasswordAndEmail(userCredentials.mail,
+                userCredentials.password)
+        } catch (e: Exception) {
+            // En caso de error, actualizar el estado con un estado de error
+            dataStateUser.value = UserState.Error(e.localizedMessage!!)
+        }
+    }
+    suspend fun getUserByEmail(email: String):User {
+        dataStateUser.value = UserState.Loading
+        try {
+            // Llamar a la función para obtener las credenciales del usuario desde la base de datos
+            selectUserByEmail(context,DatabaseType.ROOM,email)
+
+            // Actualizar el estado con las credenciales obtenidas
+            dataStateUser.value = UserState.GetUserByEmail(email)
+        } catch (e: Exception) {
+            // En caso de error, actualizar el estado con un estado de error
+            dataStateUser.value = UserState.Error(e.localizedMessage!!)
+        }
+        return  selectUserByEmail(context,DatabaseType.ROOM,email)
     }
 
 

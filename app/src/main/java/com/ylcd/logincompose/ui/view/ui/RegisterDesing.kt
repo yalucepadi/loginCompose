@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -72,14 +73,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
+import com.ylcd.logincompose.ui.view.fragments.RegisterFragment
 import com.ylcd.logincompose.ui.view.navigation.Screen
 import com.ylcd.logincompose.util.Validations
 
 class RegisterDesing {
 
     @Composable
-    fun RegisterScreen(navController: NavController) {
+    fun RegisterScreen(navController: NavController, registerFragment: RegisterFragment) {
         AppComposeTheme {
+            val context = LocalContext.current
             var validations: Validations = Validations()
             var mail by remember { mutableStateOf("") }
             var tel by remember { mutableStateOf("") }
@@ -334,10 +337,12 @@ class RegisterDesing {
                                         confirmPassword
                                     )
                                 ) "" else "Las contraseñas no coinciden"
-
+                            val verificar = registerFragment.register(mail.toString(),tel.toString()
+                                ,password.toString(),context)
                             if (errorMessageMail.isEmpty() && errorMessageTel.isEmpty() &&
-                                errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()) {
-                                // All validations passed, proceed with registration
+                                errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()&&
+                                verificar) {
+                                // All validati ons passed, proceed with registration
                                 navController.navigate(Screen.MainScreen.route)
                             }
                         },

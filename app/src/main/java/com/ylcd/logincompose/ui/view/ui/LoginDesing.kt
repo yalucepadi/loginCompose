@@ -38,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +62,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -80,22 +82,26 @@ import com.ylcd.logincompose.ui.theme.AppComposeTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ylcd.logincompose.ui.view.fragments.LoginFragment
 import com.ylcd.logincompose.ui.view.navigation.Screen
 import com.ylcd.logincompose.util.Validations
 
 class LoginDesing {
 
     @Composable
-    fun LoginScreen(navController: NavController) {
+    fun LoginScreen(navController: NavController, loginFragment: LoginFragment) {
         AppComposeTheme {
-
+            val context = LocalContext.current
             var validations: Validations = Validations()
             var mail by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
+            var passwordR by remember { mutableStateOf("") }
             var rememberMe by remember { mutableStateOf(false) }
             var passwordVisible by remember { mutableStateOf(false) }
             var errorMessageMail by remember { mutableStateOf("") }
+            var errorPassword by remember { mutableStateOf("") }
             var showErrorMessages by remember { mutableStateOf(false) }
+
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -153,131 +159,152 @@ class LoginDesing {
                         }
                     }
                 }
-            }
-            // Contenido principal
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
-                IngresoText()
-                Spacer(modifier = Modifier.height(32.dp))
-                OutlinedTextField(
-                    value = mail,
-                    onValueChange = { mail = it
-                        errorMessageMail =
-                            if (validations.isValidEmail(it)) "" else "Correo inválido"
-                                    },
-                    label = { Text("Correo electrónico") },
-                    placeholder = { Text("Ingresar correo electrónico") },
-                    modifier = Modifier.fillMaxWidth(),
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                            isError = errorMessageMail.isNotEmpty() && showErrorMessages
-                )
-
-                if (errorMessageMail.isNotEmpty() && showErrorMessages) {
-                    Text(
-                        text = errorMessageMail,
-                        color = Color.Red,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.align(Alignment.End)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Contraseña") },
-                    singleLine = true,
-                    placeholder = { Text("Ej: abcABC#123") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                // Contenido principal
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                painter = if (passwordVisible) painterResource(id = R.drawable.visibility) else painterResource(
-                                    id = R.drawable.visibility_off
-                                ),
-                                contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(250.dp))  // Asegura que el contenido esté debajo de la curva
+                    IngresoText()
+                    Spacer(modifier = Modifier.height(32.dp))
+                    OutlinedTextField(
+                        value = mail,
+                        onValueChange = {
+                            mail = it
+                            errorMessageMail = if (validations.isValidEmail(it)) "" else "Correo inválido"
+
+                            // Llamar a obtenertoCompare solo si el email no está vacío y es válido
+                            if (it.isNotEmpty() && validations.isValidEmail(it)) {
+                                loginFragment.obtenertoCompare(it, context) { passR ->
+                                    passwordR = passR
+                                }
+                            }
+                        },
+                        label = { Text("Correo electrónico") },
+                        placeholder = { Text("Ingresar correo electrónico") },
+                        modifier = Modifier.fillMaxWidth(),
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                        isError = errorMessageMail.isNotEmpty() && showErrorMessages
+                    )
+
+                    if (errorMessageMail.isNotEmpty() && showErrorMessages) {
+                        Text(
+                            text = errorMessageMail,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = {
+                            password = it
+                            errorPassword = if (validations.passwordsMatch(it, passwordR)) "" else "Contraseña incorrecta"
+                        },
+                        label = { Text("Contraseña") },
+                        singleLine = true,
+                        placeholder = { Text("Ej: abcABC#123") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        trailingIcon = {
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    painter = if (passwordVisible) painterResource(id = R.drawable.visibility) else painterResource(
+                                        id = R.drawable.visibility_off
+                                    ),
+                                    contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                                )
+                            }
+                        },
+                        isError = errorPassword.isNotEmpty() && showErrorMessages
+                    )
+                    if (showErrorMessages && errorPassword.isNotEmpty()) {
+                        Text(
+                            text = errorPassword,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = rememberMe,
+                                onCheckedChange = { rememberMe = it }
                             )
+                            Text("Recordarme", color = MaterialTheme.colorScheme.primary)
+                        }
+                        TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
+                            Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
                         }
                     }
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            showErrorMessages = true
+                            errorMessageMail = if (validations.isValidEmail(mail)) "" else "Correo inválido"
 
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = rememberMe,
-                            onCheckedChange = { rememberMe = it }
-                        )
-                        Text("Recordarme", color = MaterialTheme.colorScheme.primary)
-                    }
-                    TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
-                        Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = {    showErrorMessages = true
-                        errorMessageMail =
-                            if (validations.isValidEmail(mail)) "" else "Correo inválido"
+                            errorPassword = if (validations.passwordsMatch(password, passwordR)) "" else "Contraseña incorrecta"
+                            if (errorPassword.isEmpty() && errorMessageMail.isEmpty()) {
+                                navController.navigate(Screen.ProfileScreen.route)
+                            }
 
-                              },
-                    modifier = Modifier
-                        .width(250.dp)
-                        .height(30.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                    contentPadding = PaddingValues(0.dp) // Remove default padding
-                ) {
-                    Text(
-                        "Ingresar",
-                        color = MaterialTheme.colorScheme.background,
-                        fontSize = 15.sp, // Reduced font size to fit in the small button
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center, // Center the text horizontally
+                        },
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .wrapContentHeight(Alignment.CenterVertically) // Center vertically
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End // This aligns the content to the left
-                ) {
-                    Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
-                    TextButton(onClick = { navController.navigate(Screen.RegisterScreen.route)}) {
-                        Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
+                            .width(250.dp)
+                            .height(30.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                        contentPadding = PaddingValues(0.dp) // Remove default padding
+                    ) {
+                        Text(
+                            "Ingresar",
+                            color = MaterialTheme.colorScheme.background,
+                            fontSize = 15.sp, // Reduced font size to fit in the small button
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center, // Center the text horizontally
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .wrapContentHeight(Alignment.CenterVertically) // Center vertically
+                        )
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End // This aligns the content to the left
+                    ) {
+                        Text("No tienes una cuenta?", color = MaterialTheme.colorScheme.primary)
+                        TextButton(onClick = { navController.navigate(Screen.RegisterScreen.route) }) {
+                            Text("Registrarse", color = MaterialTheme.colorScheme.secondary)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Logo(size = 50.dp)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Logo(size = 50.dp)
             }
         }
     }
-
-
-
 
     @Composable
     fun Logo(size: Dp) {
@@ -301,7 +328,6 @@ class LoginDesing {
         }
     }
 
-
     @Composable
     fun IngresoText() {
         val secondaryColor = MaterialTheme.colorScheme.secondary.toArgb()
@@ -315,7 +341,12 @@ class LoginDesing {
         Box(
             modifier = Modifier
                 .fillMaxWidth()  // Occupies the entire available width
-                .padding(start = 0.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)  // Adjust the start padding to move the text to the left
+                .padding(
+                    start = 0.dp,
+                    top = 16.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                )  // Adjust the start padding to move the text to the left
         ) {
             BasicText(
                 text = "Ingreso",

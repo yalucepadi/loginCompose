@@ -14,6 +14,7 @@ fragmentKtx = "1.8.1"
 navigationuiktx= "2.7.7"
 navigationCompose = "2.7.7"
 material3Android = "1.2.1"
+coil="2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +31,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+coil-compose={group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 
 androidx-room-runtime = { group="androidx.room", name="room-runtime", version.ref= "roomVersion"}

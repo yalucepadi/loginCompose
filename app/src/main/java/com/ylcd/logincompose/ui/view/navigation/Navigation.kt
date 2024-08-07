@@ -5,7 +5,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Dao
+import com.ylcd.logincompose.ui.view.fragments.LoginFragment
+import com.ylcd.logincompose.ui.view.fragments.RegisterFragment
 import com.ylcd.logincompose.ui.view.ui.LoginDesing
+import com.ylcd.logincompose.ui.view.ui.ProfileDesing
 import com.ylcd.logincompose.ui.view.ui.RegisterDesing
 
 @Composable
@@ -15,14 +18,18 @@ fun Navigation() {
 
         composable(route = Screen.MainScreen.route) {
             val loginDesing: LoginDesing = LoginDesing()
-            loginDesing.LoginScreen(navController)
+            loginDesing.LoginScreen(navController,LoginFragment())
         }
 
         composable(route = Screen.RegisterScreen.route) {
             val registerDesing: RegisterDesing = RegisterDesing()
-            registerDesing.RegisterScreen(navController)
+            registerDesing.RegisterScreen(navController, RegisterFragment())
         }
+        composable(route = Screen.ProfileScreen.route) {
+            val profileDesing: ProfileDesing = ProfileDesing()
+            profileDesing.ProfileScreen()
 
+        }
 
 
     }
