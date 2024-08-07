@@ -5,7 +5,7 @@ sealed class UserIntent {
     object InsertUser : UserIntent()
     object GetEmailAndPassword : UserIntent()
     object GetUserByEmail: UserIntent()
-
+    object SaveUserByEmail: UserIntent()
     object GetUserById: UserIntent()
 
 }

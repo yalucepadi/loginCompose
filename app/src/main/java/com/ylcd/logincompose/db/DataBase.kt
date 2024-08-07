@@ -6,6 +6,7 @@ import androidx.room.Room
 
 import com.ylcd.logincompose.enum.DatabaseType
 import com.ylcd.logincompose.model.User
+import com.ylcd.logincompose.model.UserRemenber
 import com.ylcd.logincompose.model.operation.UserCredentials
 import com.ylcd.logincompose.repository.UserRepository
 
@@ -31,9 +32,33 @@ class DataBase {
             val roomDb = Room.databaseBuilder(
                 context,
                 RoomDb::class.java,
-                "list_database"
+                "room_database"
             ).build()
             return roomDb.userDao()
+        }
+        suspend fun createUserRemenber(context: Context, databaseType: DatabaseType,
+                               user:UserRemenber ):RemenberDao{
+            return when(databaseType){
+
+                DatabaseType.ROOM ->{
+                    val roomDb:RoomDb = RoomDb.getDatabase(context,null)
+                    val repository: UserRepository = UserRepository(roomDb)
+                    repository.insertByEmail(user)
+                    createRoomUserDaoRemenber( context = context)
+
+                }
+
+            }
+
+        }
+
+        suspend fun createRoomUserDaoRemenber(context: Context): RemenberDao {
+            val roomDb = Room.databaseBuilder(
+                context,
+                RoomDb::class.java,
+                "room_database"
+            ).build()
+            return roomDb.remenberDao()
         }
         suspend fun selectEmailandPassword(context: Context, databaseType: DatabaseType,
                                            email:String, password:String): UserCredentials {

@@ -340,10 +340,11 @@ class RegisterDesing {
                             val verificar = registerFragment.register(mail.toString(),tel.toString()
                                 ,password.toString(),context)
                             if (errorMessageMail.isEmpty() && errorMessageTel.isEmpty() &&
-                                errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()&&
-                                verificar) {
+                                errorMessagePass.isEmpty() && errorMessageConfirmPass.isEmpty()
+                                ) {
+                                if(verificar){
                                 // All validati ons passed, proceed with registration
-                                navController.navigate(Screen.MainScreen.route)
+                                navController.navigate(Screen.MainScreen.route)}
                             }
                         },
                         modifier = Modifier

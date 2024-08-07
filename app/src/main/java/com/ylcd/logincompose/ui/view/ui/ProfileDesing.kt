@@ -2,12 +2,16 @@ package com.ylcd.logincompose.ui.view.ui
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -26,13 +31,11 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.ylcd.logincompose.R
 import com.ylcd.logincompose.ui.theme.AppComposeTheme
+import com.ylcd.logincompose.ui.view.navigation.Screen
 
 class ProfileDesing {
-    @Preview
     @Composable
-    fun ProfileScreen() {
-        val email:String = "pepe@gmail.com"
-        // navController: NavController, email: String
+    fun ProfileScreen(navController: NavController, email: String) {
         AppComposeTheme {
             val context = LocalContext.current
             val packageName = context.packageName
@@ -45,24 +48,28 @@ class ProfileDesing {
                 contract = ActivityResultContracts.PickVisualMedia(),
                 onResult = { uri ->
                     if (uri != null) {
-                        // Si se selecciona una nueva URI, actualiza selectedUri
                         selectedUri = uri
-                        // profileFragment.updatePhoto(context, email, uri.toString())
                     } else {
-                        // Si no se selecciona ninguna URI, establece una URI predeterminada
                         selectedUri = defaultUri
-                        // profileFragment.updatePhoto(context, email, defaultUri.toString())
                     }
                 }
             )
 
-            Surface(
-                color = MaterialTheme.colorScheme.background
+            Box(
+                modifier = Modifier.fillMaxSize()
             ) {
+                // Background Image
+                Image(
+                    painter = rememberAsyncImagePainter(selectedUri),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop // This ensures the image covers the entire screen
+                )
+
+                // Content
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
@@ -71,19 +78,7 @@ class ProfileDesing {
                         text = "Bienvenido, $email!",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Image(
-                        painter = rememberAsyncImagePainter(selectedUri),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.Gray)
+                        color = Color.White // Changed to white for better visibility on the background
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -92,20 +87,27 @@ class ProfileDesing {
                         text = "Elige un fondo de pantalla:",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = Color.White // Changed to white for better visibility on the background
                     )
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val backgrounds = listOf(
-                            R.drawable.textura
-                        )
-                        backgrounds.forEach { bg ->
-                            BackgroundOption(painterResource(id = bg)) {
-                                selectedUri = Uri.parse("android.resource://$packageName/$bg")
-                            }
+                        IconButton(
+                            onClick = {
+                                singlePhotoPicker.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
+                                )
+                            },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.AddCircle,
+                                contentDescription = null,
+                                tint = Color.White // Changed to white for better visibility on the background
+                            )
                         }
                     }
 
@@ -113,8 +115,7 @@ class ProfileDesing {
 
                     Button(
                         onClick = {
-                            // Perform logout action
-                            //navController.navigate("login")
+                            navController.navigate(Screen.MainScreen.route)
                         },
                         modifier = Modifier
                             .width(200.dp)
@@ -124,7 +125,7 @@ class ProfileDesing {
                     ) {
                         Text(
                             text = "Cerrar sesión",
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -132,18 +133,4 @@ class ProfileDesing {
                 }
             }
         }
-    }
-
-    @Composable
-    fun BackgroundOption(painter: Painter, onClick: () -> Unit) {
-        Image(
-            painter = painter,
-            contentDescription = null,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.Gray)
-                .clickable(onClick = onClick)
-        )
-    }
-}
+    }}

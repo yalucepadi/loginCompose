@@ -14,12 +14,14 @@ import com.ylcd.logincompose.model.User
 import com.ylcd.logincompose.repository.UserRepository
 import com.ylcd.logincompose.ui.viewModel.DataViewModel
 import android.widget.Toast
+import com.ylcd.logincompose.model.UserRemenber
 import com.ylcd.logincompose.ui.view.ui.RegisterDesing
 
 
 class RegisterFragment : Fragment() {
     private lateinit var mUserViewModel: DataViewModel
     private val user: User = User()
+    val userRemenber: UserRemenber = UserRemenber()
     var result=false
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,14 +50,15 @@ class RegisterFragment : Fragment() {
         context: Context
     ): Boolean { // Devuelve un booleano
         val room: RoomDb = RoomDb.getDatabase(context, scope = null)
-        mUserViewModel = DataViewModel(repository = UserRepository(room), user, context)
+        mUserViewModel = DataViewModel(repository = UserRepository(room), user,userRemenber,
+            context)
 
         return if (inputCheck(mail, tel, password)) {
             result = true
             val user = User(0,mail,tel,password)
             mUserViewModel.insertUser(user)
 
-            Toast.makeText(context, "Successfully added!,${result}", Toast.LENGTH_LONG).show()
+            //Toast.makeText(context, "Successfully added!,${result}", Toast.LENGTH_LONG).show()
             true
         } else {
             result = false

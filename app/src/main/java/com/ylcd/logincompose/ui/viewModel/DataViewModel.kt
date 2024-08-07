@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ylcd.logincompose.db.DataBase.Companion.createUser
+import com.ylcd.logincompose.db.DataBase.Companion.createUserRemenber
 import com.ylcd.logincompose.db.DataBase.Companion.selectEmailandPassword
 import com.ylcd.logincompose.db.DataBase.Companion.selectUserByEmail
 import com.ylcd.logincompose.enum.DatabaseType
 import com.ylcd.logincompose.model.User
+import com.ylcd.logincompose.model.UserRemenber
 import com.ylcd.logincompose.repository.UserRepository
 import com.ylcd.logincompose.ui.intent.UserIntent
 import com.ylcd.logincompose.ui.viewState.UserState
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class DataViewModel(
     private val repository: UserRepository,
     private val user: User,
+    private val userRemenber: UserRemenber,
     context: Context
 
 ) : ViewModel() {
@@ -31,6 +34,7 @@ init {
 }
     private fun handleIntentUser(){
 
+
         viewModelScope.launch {
            userIntent.consumeAsFlow().collect{
                when(it){
@@ -39,6 +43,7 @@ init {
                    UserIntent.GetEmailAndPassword ->getEmailAndPassword(user.mail,user.password)
                    UserIntent.GetUserByEmail -> getUserByEmail(user.mail)
                    UserIntent.GetUserById -> TODO()
+                   UserIntent.SaveUserByEmail -> insertUserRember(userRemenber)
                }
 
 
@@ -48,7 +53,27 @@ init {
         }
     }
 
-     fun insertUser(user: User) {
+    fun insertUserRember(user: UserRemenber) {
+
+        viewModelScope.launch {
+            dataStateUser.value = UserState.Loading
+
+            dataStateUser.value = try {
+                val userRemenber = UserRemenber(0,user.state,user.userId)
+                createUserRemenber(context,DatabaseType.ROOM,userRemenber)
+                UserState.InsertDataRemenber(UserRemenber())
+
+
+            }
+            catch (e: Exception){
+                UserState.Error(e.localizedMessage!!)
+            }
+
+        }
+
+    }
+
+    fun insertUser(user: User) {
 
         viewModelScope.launch {
              dataStateUser.value = UserState.Loading

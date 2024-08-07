@@ -15,5 +15,9 @@ interface RemenberDao {
     @Query("SELECT * FROM remenber where col_UserId=:id")
     fun getStateByUserId(id: Int): UserRemenber
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertByEmail(userRemenber: UserRemenber)
+
+
 
 }

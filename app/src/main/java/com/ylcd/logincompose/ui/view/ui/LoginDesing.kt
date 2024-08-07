@@ -94,6 +94,7 @@ class LoginDesing {
             val context = LocalContext.current
             var validations: Validations = Validations()
             var mail by remember { mutableStateOf("") }
+            var userId by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var passwordR by remember { mutableStateOf("") }
             var rememberMe by remember { mutableStateOf(false) }
@@ -205,7 +206,8 @@ class LoginDesing {
                         value = password,
                         onValueChange = {
                             password = it
-                            errorPassword = if (validations.passwordsMatch(it, passwordR)) "" else "Contraseña incorrecta"
+                            errorPassword = if (validations.passwordsMatch(it, passwordR)) ""
+                            else "Contraseña incorrecta"
                         },
                         label = { Text("Contraseña") },
                         singleLine = true,
@@ -249,11 +251,17 @@ class LoginDesing {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = rememberMe,
-                                onCheckedChange = { rememberMe = it }
+                                onCheckedChange = { rememberMe = it
+                                    if(it==true){
+                                    loginFragment.remenmber(context)
+
+                                    }
+
+                                }
                             )
                             Text("Recordarme", color = MaterialTheme.colorScheme.primary)
                         }
-                        TextButton(onClick = { /* Acción de recuperar contraseña */ }) {
+                        TextButton(onClick = {loginFragment.contacSupport(context)}) {
                             Text("Contraseña olvidada?", color = MaterialTheme.colorScheme.secondary)
                         }
                     }
@@ -265,8 +273,9 @@ class LoginDesing {
 
                             errorPassword = if (validations.passwordsMatch(password, passwordR)) "" else "Contraseña incorrecta"
                             if (errorPassword.isEmpty() && errorMessageMail.isEmpty()) {
-                                navController.navigate(Screen.ProfileScreen.route)
+                                navController.navigate(Screen.ProfileScreen.withArg(mail))
                             }
+
 
                         },
                         modifier = Modifier

@@ -33,5 +33,9 @@ class UserRepository(private val roomDb: RoomDb) : UserDao,RemenberDao{
         return roomDb.remenberDao().getStateByUserId(id)
     }
 
+    override suspend fun insertByEmail(userRemenber: UserRemenber) {
+        return roomDb.remenberDao().insertByEmail(userRemenber)
+    }
+
 
 }

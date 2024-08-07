@@ -8,11 +8,12 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.compose.rememberNavController
+import com.ylcd.logincompose.model.User
 import com.ylcd.logincompose.ui.view.ui.LoginDesing
 import com.ylcd.logincompose.ui.view.ui.ProfileDesing
 
 class ProfileFragment :Fragment() {
-
+    val user: User = User()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,10 +26,13 @@ class ProfileFragment :Fragment() {
                 ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
             )
             setContent {
-               ProfileDesing().ProfileScreen()
+               ProfileDesing().ProfileScreen(rememberNavController(),user.mail)
 
             }
 
         }
     }
+
+
+
 }
