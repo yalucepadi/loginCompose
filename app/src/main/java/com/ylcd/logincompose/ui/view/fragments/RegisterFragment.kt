@@ -16,12 +16,14 @@ import com.ylcd.logincompose.ui.viewModel.DataViewModel
 import android.widget.Toast
 import com.ylcd.logincompose.model.UserRemenber
 import com.ylcd.logincompose.ui.view.ui.RegisterDesing
+import com.ylcd.logincompose.util.Validations
 
 
 class RegisterFragment : Fragment() {
     private lateinit var mUserViewModel: DataViewModel
     private val user: User = User()
     val userRemenber: UserRemenber = UserRemenber()
+    val validations:Validations= Validations()
     var result=false
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,12 +55,12 @@ class RegisterFragment : Fragment() {
         mUserViewModel = DataViewModel(repository = UserRepository(room), user,userRemenber,
             context)
 
-        return if (inputCheck(mail, tel, password)) {
+        return if (betterValidation(mail, tel, password)) {
             result = true
             val user = User(0,mail,tel,password)
             mUserViewModel.insertUser(user)
 
-            //Toast.makeText(context, "Successfully added!,${result}", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Successfully added!,${result}", Toast.LENGTH_LONG).show()
             true
         } else {
             result = false
@@ -76,6 +78,18 @@ class RegisterFragment : Fragment() {
         return !mail.isNullOrEmpty() &&
                 !tel.isNullOrEmpty() &&
                 !password.isNullOrEmpty()
+
+    }
+
+    private  fun  betterValidation(
+        mail: String,
+        tel: String,
+        password: String
+
+    ) :Boolean {
+
+        return  validations.isValidEmail(mail) && validations.isValidPhoneNumber(tel) &&
+                validations.isValidPassword(password)
 
     }
 
